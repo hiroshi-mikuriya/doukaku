@@ -1,5 +1,18 @@
+def length(pt1, pt2)
+  ((pt1[:x] - pt2[:x])**2 + (pt1[:y] - pt2[:y])**2)**0.5
+end
+
 def solve(src)
-  { x: 172, y: 47, r:117 }
+  src.length.times do |i1|
+    ((i1 + 1)...src.length).each do |i2|
+      pt1 = src[i1]
+      pt2 = src[i2]
+      c = { x: (pt1[:x] + pt2[:x]) / 2, y: (pt1[:y] + pt2[:y]) / 2 }
+      c[:r] = length(c, pt1)
+      return c if src.all? { |pt| (length(pt, c) - c[:r]).abs <= 1 }
+    end
+  end
+  { x: 0, y: 0, r: 0 }
 end
 
 def test(data)
@@ -7,7 +20,7 @@ def test(data)
   exp = data[:exp]
   act = solve(src)
   # puts %(#{exp} != #{act} #{src}) unless %i[x y r].all? { |s| exp[s] == act[s] }
-  puts %i[x y r].all? { |s| exp[s] == act[s] } ? 'OK' : 'NG'
+  puts %i[x y r].all? { |s| exp[s] == act[s] } ? 'OK' : %(#{exp} != #{act} #{src.length} points)
 end
 
 def make_data
