@@ -1,5 +1,5 @@
 def length(pt1, pt2)
-  ((pt1[:x] - pt2[:x])**2 + (pt1[:y] - pt2[:y])**2)**0.5
+  %i[x y].map { |s| (pt1[s] - pt2[s])**2 }.inject(&:+)**0.5
 end
 
 def solve(src)
