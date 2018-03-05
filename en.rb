@@ -7,7 +7,7 @@ def solve(src)
     ((i1 + 1)...src.length).each do |i2|
       pt1 = src[i1]
       pt2 = src[i2]
-      c = { x: (pt1[:x] + pt2[:x]) / 2, y: (pt1[:y] + pt2[:y]) / 2 }
+      c = %i[x y].each.with_object({}) { |s, o| o[s] = (pt1[s] + pt2[s]) / 2 }
       c[:r] = length(c, pt1)
       return c if src.all? { |pt| (length(pt, c) - c[:r]).abs <= 1 }
     end
