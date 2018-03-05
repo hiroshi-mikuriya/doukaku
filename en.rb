@@ -20,11 +20,11 @@ def test(data)
   exp = data[:exp]
   act = solve(src)
   # puts %(#{exp} != #{act} #{src}) unless %i[x y r].all? { |s| exp[s] == act[s] }
-  puts %i[x y r].all? { |s| exp[s] == act[s] } ? 'OK' : %(#{exp} != #{act} #{src.length} points)
+  puts %i[x y r].all? { |s| (exp[s] - act[s]).abs < 0.1 } ? 'OK' : %(#{exp} != #{act} #{src.length} points)
 end
 
 def make_data
-  x, y, r = Array.new(3) { rand(256) }
+  x, y, r = Array.new(3) { rand(2560) / 10.0 }
   count = (10...20).to_a.shuffle[0]
   src = count.times.with_object([]) do |i, o|
     an = 2 * Math::PI / count * i
