@@ -23,20 +23,18 @@ def num(p0)
   return '-' unless p0.all?(&:positive?)
   area = p0.max
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
-  if area.odd?
-    p0.first == area ? mid - area + p0.last : mid + area - p0.first
-  else
-    p0.first == area ? mid + area - p0.last : mid - area + p0.first
-  end
+  d = area - p0.min
+  area.odd? == (p0.first == area) ? mid - d : mid + d
 end
 
 def calc(src)
   c = pos(src)
-  u = num([c[0], c[1] - 1])
-  d = num([c[0], c[1] + 1])
-  l = num([c[0] - 1, c[1]])
-  r = num([c[0] + 1, c[1]])
-  [u, d, l, r].map(&:to_s).join(',')
+  [
+    num([c[0], c[1] - 1]),
+    num([c[0], c[1] + 1]),
+    num([c[0] - 1, c[1]]),
+    num([c[0] + 1, c[1]])
+  ].map(&:to_s).join(',')
 end
 
 DATA.each do |d|
