@@ -34,7 +34,7 @@ def calc(src)
     num([c[0], c[1] + 1]),
     num([c[0] - 1, c[1]]),
     num([c[0] + 1, c[1]])
-  ].map(&:to_s).join(',')
+  ].join(',')
 end
 
 DATA.each do |d|
