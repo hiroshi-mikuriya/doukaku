@@ -2,12 +2,9 @@ def pos(n)
   area = Math.sqrt(n - 1).to_i + 1
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   d = mid - n
-  p0 = [area, area]
-  if area.odd?
-    d.positive? ? [p0[0], p0[1] - d] : [p0[0] + d, p0[1]]
-  else
-    d.positive? ? [p0[0] - d, p0[1]] : [p0[0], p0[1] + d]
-  end
+  m = d.positive? ? [0, -d] : [d, 0]
+  m = m.reverse if area.even?
+  m.map { |a| a + area }
 end
 
 def num(p0)
