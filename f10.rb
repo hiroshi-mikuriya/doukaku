@@ -1,9 +1,5 @@
-def area_num(n)
-  Math.sqrt(n - 1).to_i + 1
-end
-
 def pos(n)
-  area = area_num(n)
+  area = Math.sqrt(n - 1).to_i + 1
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   d = mid - n
   p0 = [area, area]
