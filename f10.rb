@@ -1,10 +1,5 @@
 def area_num(n)
-  area = 1
-  loop do
-    max = Array.new(area) { |a| a * 2 + 1 }.inject(&:+)
-    return area if n <= max
-    area += 1
-  end
+  Math.sqrt(n - 1).to_i + 1
 end
 
 def pos(n)
@@ -29,12 +24,8 @@ end
 
 def calc(src)
   c = pos(src)
-  [
-    num([c[0], c[1] - 1]),
-    num([c[0], c[1] + 1]),
-    num([c[0] - 1, c[1]]),
-    num([c[0] + 1, c[1]])
-  ].join(',')
+  [[0, -1], [0, 1], [-1, 0], [1, 0]]
+    .map { |x, y| num([c[0] + x, c[1] + y]) }.join(',')
 end
 
 DATA.each do |d|
