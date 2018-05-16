@@ -3,12 +3,12 @@ def pos(n)
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   d = mid - n
   m = d.positive? ? [0, -d] : [d, 0]
-  m = m.reverse if area.even?
+  m.reverse! if area.even?
   m.map { |a| a + area }
 end
 
 def num(p0)
-  return '-' unless p0.all?(&:positive?)
+  return unless p0.all?(&:positive?)
   area = p0.max
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   d = area - p0.min
@@ -18,7 +18,7 @@ end
 def calc(src)
   c = pos(src)
   [[0, -1], [0, 1], [-1, 0], [1, 0]]
-    .map { |x, y| num([c[0] + x, c[1] + y]) }.join(',')
+    .map { |x, y| num([c[0] + x, c[1] + y]) || '-' }.join(',')
 end
 
 DATA.each do |d|
