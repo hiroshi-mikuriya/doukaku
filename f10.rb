@@ -1,8 +1,9 @@
 def area_num(n)
-  a = 1
-  (1..100).each do |i|
-    return i if n <= a
-    a += (i * 2 + 1)
+  area = 1
+  loop do
+    max = Array.new(area) { |a| a * 2 + 1 }.inject(&:+)
+    return area if n <= max
+    area += 1
   end
 end
 
@@ -10,7 +11,7 @@ def pos(n)
   area = area_num(n)
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   d = mid - n
-  p0 = [area - 1, area - 1]
+  p0 = [area, area]
   if area.odd?
     d.positive? ? [p0[0], p0[1] - d] : [p0[0] + d, p0[1]]
   else
@@ -19,8 +20,7 @@ def pos(n)
 end
 
 def num(p0)
-  return '-' unless p0.all? { |a| 0 <= a }
-  p0 = p0.map { |a| a + 1 }
+  return '-' unless p0.all?(&:positive?)
   area = p0.max
   mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
   if area.odd?
