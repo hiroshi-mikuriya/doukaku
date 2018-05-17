@@ -2,9 +2,9 @@ def pos(n)
   area = Math.sqrt(n - 1).to_i + 1
   mid = area**2 - area + 1
   d = mid - n
-  m = d.positive? ? Complex(0, -d) : Complex(d, 0)
+  m = d.positive? ? -d * 1i : d
   m = m.conj * 1i if area.even?
-  m + Complex(area, area)
+  m + area + area * 1i
 end
 
 def num(p0)
