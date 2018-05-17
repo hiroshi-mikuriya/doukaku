@@ -1,6 +1,6 @@
 def pos(n)
   area = Math.sqrt(n - 1).to_i + 1
-  mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
+  mid = area**2 - area + 1
   d = mid - n
   m = d.positive? ? [0, -d] : [d, 0]
   m.reverse! if area.even?
@@ -10,7 +10,7 @@ end
 def num(p0)
   return unless p0.all?(&:positive?)
   area = p0.max
-  mid = 1 + Array.new(area) { |a| a * 2 }.inject(&:+)
+  mid = area**2 - area + 1
   d = area - p0.min
   area.odd? == (p0.first == area) ? mid - d : mid + d
 end
