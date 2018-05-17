@@ -2,23 +2,24 @@ def pos(n)
   area = Math.sqrt(n - 1).to_i + 1
   mid = area**2 - area + 1
   d = mid - n
-  m = d.positive? ? [0, -d] : [d, 0]
-  m.reverse! if area.even?
-  m.map { |a| a + area }
+  m = d.positive? ? Complex(0, -d) : Complex(d, 0)
+  m = m.conj * 1i if area.even?
+  m + Complex(area, area)
 end
 
 def num(p0)
-  return unless p0.all?(&:positive?)
-  area = p0.max
+  q = [p0.real, p0.imag]
+  return unless q.all?(&:positive?)
+  area = q.max
   mid = area**2 - area + 1
-  d = area - p0.min
-  area.odd? == (p0.first == area) ? mid - d : mid + d
+  d = area - q.min
+  area.odd? == (p0.real == area) ? mid - d : mid + d
 end
 
 def calc(src)
   c = pos(src)
-  [[0, -1], [0, 1], [-1, 0], [1, 0]]
-    .map { |x, y| num([c[0] + x, c[1] + y]) || '-' }.join(',')
+  [-1i, 1i, -1, 1]
+    .map { |a| num(c + a) || '-' }.join(',')
 end
 
 DATA.each do |d|
