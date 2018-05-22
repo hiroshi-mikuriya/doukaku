@@ -3,7 +3,7 @@ def calc(src)
   ptns = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
   count = ab.inject(1) { |a, e| a * ptns[e].size }
   return 'x' if count <= pos
-  %w[0 + -][ab.inject(0) do |a, e|
+  '0+-'[ab.inject(0) do |a, e|
     ptn = ptns[e]
     ix = pos * ptn.size / count
     count /= ptn.size
