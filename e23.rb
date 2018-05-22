@@ -1,16 +1,14 @@
 def calc(src)
+  pos, ab = src.split(',').yield_self { |a, b| [a.to_i - 1, b.chars] }
   ptns = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
-  s = src.split(',')
-  pos = s.first.to_i - 1
-  ab = s.last.chars
   count = ab.inject(1) { |a, e| a * ptns[e].size }
   return 'x' if count <= pos
   %w[0 + -][ab.inject(0) do |a, e|
     ptn = ptns[e]
-    pos1 = pos * ptn.size / count
+    ix = pos * ptn.size / count
     count /= ptn.size
     pos %= count
-    (a + ptn[pos1]) % 3
+    (a + ptn[ix]) % 3
   end]
 end
 
