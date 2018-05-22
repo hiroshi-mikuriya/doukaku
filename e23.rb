@@ -1,19 +1,17 @@
-PTN = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
-
 def calc(src)
+  ptns = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
   s = src.split(',')
   pos = s.first.to_i - 1
   ab = s.last.chars
   count = ab.inject(1) { |a, e| a * (e == 'a' ? 4 : 5) }
   return 'x' if count <= pos
-  d = ab.inject(0) do |a, e|
-    ptn = PTN[e]
-    ppos = pos * ptn.size / count
+  %w[0 + -][ab.inject(0) do |a, e|
+    ptn = ptns[e]
+    pos1 = pos * ptn.size / count
     count /= ptn.size
     pos %= count
-    (a + ptn[ppos]) % 3
-  end
-  %w[0 + -][d]
+    (a + ptn[pos1]) % 3
+  end]
 end
 
 DATA.each do |d|
