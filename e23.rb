@@ -3,7 +3,7 @@ def calc(src)
   s = src.split(',')
   pos = s.first.to_i - 1
   ab = s.last.chars
-  count = ab.inject(1) { |a, e| a * (e == 'a' ? 4 : 5) }
+  count = ab.inject(1) { |a, e| a * ptns[e].size }
   return 'x' if count <= pos
   %w[0 + -][ab.inject(0) do |a, e|
     ptn = ptns[e]
