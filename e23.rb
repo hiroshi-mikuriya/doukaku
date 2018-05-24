@@ -1,26 +1,15 @@
-PTN = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
-
-def conv(buf, ab)
-  buf.map { |n| PTN[ab].map { |a| (n + a) % 3 } }.flatten
-end
-
 def calc(src)
-  s = src.split(',')
-  pos = s.first.to_i - 1
-  ab = s.last.chars
-  count = ab.inject(1) { |a, e| a * (e == 'a' ? 4 : 5) }
+  pos, ab = src.split(',').yield_self { |a, b| [a.to_i - 1, b.chars] }
+  ptns = { 'a' => [0, 1, 2, 0], 'b' => [0, 1, 0, 2, 0] }.freeze
+  count = ab.inject(1) { |a, e| a * ptns[e].size }
   return 'x' if count <= pos
-  d = 0
-  ab.each do |a|
-    ptn = PTN[a]
-    ppos = pos * ptn.size / count
-    count -= ptn.size * ppos
-    d = (d + ptn[ppos]) % 3
-    p [ptn, ppos, count, d]
-  end
-  # o = [0]
-  # ab.each { |a| o = conv(o, a) }
-  %w[0 + -][d]
+  '0+-'[ab.inject(0) do |a, e|
+    ptn = ptns[e]
+    ix = pos * ptn.size / count
+    count /= ptn.size
+    pos %= count
+    (a + ptn[ix]) % 3
+  end]
 end
 
 DATA.each do |d|
