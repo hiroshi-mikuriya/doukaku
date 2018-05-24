@@ -1,12 +1,58 @@
+class Node
+  def initialize(n, h)
+    @n = n
+    @h = h
+    @pos = -1
+    @child = Node.new(@n, @h - 1) if @h > 1
+  end
+
+  def end?
+    @n <= @pos
+  end
+
+  def get
+    if @pos.negative?
+      @pos += 1
+      return [nil]
+    end
+    if @h <= 1
+      r = @pos
+      @pos += 1
+      return [r]
+    else
+      if @child.end?
+        @child = Node.new(@n, @h - 1)
+        @pos += 1
+      end
+      return [@pos, @child.get]
+    end
+  end
+end
+
 def calc(m, n, b, x)
-  # n = Math.log(n, b).ceil.to_i
   aa = (m..n).map { |a| a.to_s(b) }.sort
   aa[x - 1].to_i(b)
 end
 
+def calc2(m, n, b, x)
+  k = Math.log(n + 1, b).ceil.to_i
+  node = Node.new(b, k)
+  count = 0
+  until node.end?
+    a = node.get.flatten
+    a.delete(nil)
+    next if a.empty? || a.first.zero?
+    dec = a.inject(0) { |y, z| y * b + z }
+    next unless (m..n).cover? dec
+    count += 1
+    return dec if count == x
+  end
+  raise 'failed'
+end
+
 DATA.each do |d|
   n, src, exp = d.split.yield_self { |a, b, c| [a.to_i, b.split(',').map(&:to_i), c.to_i] }
-  act = calc(*src)
+  act = calc2(*src)
   puts "#{n} " + (act == exp ? 'ok' : "ng #{act} != #{exp} #{src}")
 end
 
