@@ -1,12 +1,13 @@
-def calc(src)
-  a = src.split(',').map(&:to_i)
-  a.sum
+def calc(m, n, b, x)
+  # n = Math.log(n, b).ceil.to_i
+  aa = (m..n).map { |a| a.to_s(b) }.sort
+  aa[x - 1].to_i(b)
 end
 
 DATA.each do |d|
-  n, src, exp = d.split
-  act = calc(src)
-  puts %(#{n} #{act} != #{exp} [#{src}]) unless act == exp
+  n, src, exp = d.split.yield_self { |a, b, c| [a.to_i, b.split(',').map(&:to_i), c.to_i] }
+  act = calc(*src)
+  puts "#{n} " + (act == exp ? 'ok' : "ng #{act} != #{exp} #{src}")
 end
 
 __END__
