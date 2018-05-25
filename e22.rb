@@ -2,32 +2,38 @@ class Node
   def initialize(n, h)
     @n = n
     @h = h
-    @pos = -1
+    @pos = nil
     @child = Node.new(@n, @h - 1) if @h > 1
   end
 
   def end?
-    @n <= @pos
+    @pos && @n <= @pos
   end
 
   def get
-    if @pos.negative?
-      @pos += 1
-      return [nil]
+    raise 'bug' if end?
+    if @pos.nil?
+      @pos = 0
+      return ''
     end
-    if @h <= 1
+    if defined? @child
+      if @child.end?
+        @pos += 1
+        return '' if end?
+        @child = Node.new(@n, @h - 1)
+      end
+      @pos.to_s(@n) + @child.get
+    else
       r = @pos
       @pos += 1
-      return [r]
-    else
-      if @child.end?
-        @child = Node.new(@n, @h - 1)
-        @pos += 1
-      end
-      return [@pos, @child.get]
+      r.to_s(@n)
     end
   end
 end
+
+#node = Node.new(2, 3)
+#p node.get until node.end?
+#exit
 
 def calc(m, n, b, x)
   aa = (m..n).map { |a| a.to_s(b) }.sort
@@ -39,10 +45,9 @@ def calc2(m, n, b, x)
   node = Node.new(b, k)
   count = 0
   until node.end?
-    a = node.get.flatten
-    a.delete(nil)
-    next if a.empty? || a.first.zero?
-    dec = a.inject(0) { |y, z| y * b + z }
+    a = node.get
+    next if a.empty? || a[0].to_i.zero?
+    dec = a.to_i(b)
     next unless (m..n).cover? dec
     count += 1
     return dec if count == x
