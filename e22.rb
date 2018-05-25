@@ -1,13 +1,13 @@
 class Node
-  def initialize(n, h)
-    @n = n
+  def initialize(rng, h)
+    @rng = rng.to_a
     @h = h
     @pos = nil
-    @child = Node.new(@n, @h - 1) if @h > 1
+    @child = Node.new((0..rng.last), @h - 1) if @h > 1
   end
 
   def end?
-    @pos && @n <= @pos
+    @pos && @rng.size <= @pos
   end
 
   def get
@@ -22,18 +22,18 @@ class Node
         return '' if end?
         @child = Node.new(@n, @h - 1)
       end
-      @pos.to_s(@n) + @child.get
+      @rng[@pos].to_s(@rng.last) + @child.get
     else
       r = @pos
       @pos += 1
-      r.to_s(@n)
+      @rng[r].to_s(@rng.last)
     end
   end
 end
 
-#node = Node.new(2, 3)
-#p node.get until node.end?
-#exit
+node = Node.new((1..2), 3)
+p node.get until node.end?
+exit
 
 def calc(m, n, b, x)
   aa = (m..n).map { |a| a.to_s(b) }.sort
