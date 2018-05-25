@@ -1,13 +1,13 @@
 class Node
-  def initialize(rng, h)
-    @rng = rng.to_a
+  def initialize(n, h)
+    @n = n
     @h = h
     @pos = nil
-    @child = Node.new((0..rng.last), @h - 1) if @h > 1
+    @child = Node.new(@n, @h - 1) if @h > 1
   end
 
   def end?
-    @pos && @rng.size <= @pos
+    @pos && @n <= @pos
   end
 
   def get
@@ -22,16 +22,16 @@ class Node
         return '' if end?
         @child = Node.new(@n, @h - 1)
       end
-      @rng[@pos].to_s(@rng.last) + @child.get
+      @pos.to_s(@n) + @child.get
     else
       r = @pos
       @pos += 1
-      @rng[r].to_s(@rng.last)
+      r.to_s(@n)
     end
   end
 end
 
-node = Node.new((1..2), 3)
+node = Node.new(2, 3)
 p node.get until node.end?
 exit
 
