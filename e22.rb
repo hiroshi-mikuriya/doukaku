@@ -31,10 +31,6 @@ class Node
   end
 end
 
-node = Node.new(2, 3)
-p node.get until node.end?
-exit
-
 def calc(m, n, b, x)
   aa = (m..n).map { |a| a.to_s(b) }.sort
   aa[x - 1].to_i(b)
@@ -45,9 +41,9 @@ def calc2(m, n, b, x)
   node = Node.new(b, k)
   count = 0
   until node.end?
-    a = node.get
-    next if a.empty? || a[0].to_i.zero?
-    dec = a.to_i(b)
+    str = node.get
+    next unless str.size.positive? && str[0] != '0'
+    dec = str.to_i(b)
     next unless (m..n).cover? dec
     count += 1
     return dec if count == x
