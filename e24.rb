@@ -5,9 +5,11 @@ def calc(a, b)
 end
 
 DATA.each do |d|
-  JSON.parse(d)['test_data'].each do |a|
-    act = calc(*a['src'].split(',').map(&:to_i))
-    puts "#{a['number']} #{act} != #{a['expected']}" unless act == a['expected']
+  json = JSON.parse(d, symbolize_names: true)
+  %i[event_id event_url].each { |s| p [s, json[s]] }
+  json[:test_data].each do |a|
+    act = calc(*a[:src].split(',').map(&:to_i))
+    puts "#{a[:number]} #{act} != #{a[:expected]}" unless act == a[:expected]
   end
 end
 
