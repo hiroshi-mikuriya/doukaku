@@ -7,13 +7,13 @@ class Guruguru
   end
 
   def calc
-    (1...@b).each { |n| hoge(n.to_s(@b)) }
+    (1...@b).each { |n| countup(n.to_s(@b)) }
     @count
   end
 
   private
 
-  def hoge(src)
+  def countup(src)
     return unless guruguru?(src)
 
     @count += 1 if (@x..@y).cover?(src.to_i(@b))
@@ -21,7 +21,7 @@ class Guruguru
 
     (0...@b).each do |n|
       src0 = src + n.to_s(@b)
-      hoge(src0) if src0.to_i(@b) <= @y
+      countup(src0) if src0.to_i(@b) <= @y
     end
   end
 
