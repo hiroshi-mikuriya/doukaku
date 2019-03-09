@@ -1,21 +1,43 @@
-def guruguru?(b, src)
-  (1...src.size).all? do |i|
-    a0, a1 = [-1, 0].map { |c| src[i + c].to_i(b) }
-    a0 == a1 || (a0 + 1) % b == a1
+class Guruguru
+  def initialize(b, x, y)
+    @b = b.to_i
+    @x, @y = [x, y].map { |a| a.to_i(@b) }
+    @count = 0
+    @keta = y.size
   end
-end
 
-def calc(b, x, y)
-  b = b.to_i
-  min, max = [x, y].map { |a| a.to_i(b) }
-  (min..max).select { |n| guruguru?(b, n.to_s(b)) }.size
+  def calc
+    (1...@b).each { |n| hoge(n.to_s(@b)) }
+    @count
+  end
+
+  private
+
+  def hoge(src)
+    return unless guruguru?(src)
+
+    @count += 1 if (@x..@y).cover?(src.to_i(@b))
+    return if @keta <= src.size
+
+    (0...@b).each do |n|
+      src0 = src + n.to_s(@b)
+      hoge(src0) if src0.to_i(@b) <= @y
+    end
+  end
+
+  def guruguru?(src)
+    (src.size == 1) || (1...src.size).all? do |i|
+      a0, a1 = [-1, 0].map { |c| src[i + c].to_i(@b) }
+      a0 == a1 || (a0 + 1) % @b == a1
+    end
+  end
 end
 
 DATA.each do |d|
   n, src, exp = d.split
-  act = calc(*src.split(','))
+  act = Guruguru.new(*src.split(',')).calc
   if act == exp.to_i
-    puts "#{n} ok"
+    puts "#{n} OK"
   else
     puts "#{n} ng #{src} #{act} != #{exp}"
   end
