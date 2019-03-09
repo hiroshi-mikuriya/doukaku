@@ -2,7 +2,7 @@ class Guruguru
   def initialize(b, x, y)
     @b = b.to_i
     @x, @y = [x, y].map { |a| a.to_i(@b) }
-    @keta = y.size
+    @keta = { min: x.size, max: y.size }.freeze
   end
 
   def calc
@@ -14,8 +14,8 @@ class Guruguru
   private
 
   def countup(src)
-    @count += 1 if (@x..@y).cover?(src.to_i(@b))
-    return if @keta <= src.size
+    @count += 1 if @keta[:min] <= src.size && (@x..@y).cover?(src.to_i(@b))
+    return if @keta[:max] <= src.size
 
     (0...@b).each do |n|
       n0 = src[-1].to_i(@b)
