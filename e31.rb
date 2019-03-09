@@ -14,18 +14,12 @@ class Guruguru
   private
 
   def countup(src)
-    return unless guruguru?(src)
-
     @count += 1 if (@x..@y).cover?(src.to_i(@b))
     return if @keta <= src.size
 
-    (0...@b).each { |n| countup(src + n.to_s(@b)) }
-  end
-
-  def guruguru?(src)
-    (src.size == 1) || (1...src.size).all? do |i|
-      a0, a1 = [-1, 0].map { |c| src[i + c].to_i(@b) }
-      a0 == a1 || (a0 + 1) % @b == a1
+    (0...@b).each do |n|
+      n0 = src[-1].to_i(@b)
+      countup(src + n.to_s(@b)) if n0 == n || (n0 + 1) % @b == n
     end
   end
 end
