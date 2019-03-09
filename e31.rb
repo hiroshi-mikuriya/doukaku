@@ -19,10 +19,7 @@ class Guruguru
     @count += 1 if (@x..@y).cover?(src.to_i(@b))
     return if @keta <= src.size
 
-    (0...@b).each do |n|
-      src0 = src + n.to_s(@b)
-      countup(src0) if src0.to_i(@b) <= @y
-    end
+    (0...@b).each { |n| countup(src + n.to_s(@b)) }
   end
 
   def guruguru?(src)
