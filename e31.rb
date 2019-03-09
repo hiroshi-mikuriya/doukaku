@@ -2,11 +2,11 @@ class Guruguru
   def initialize(b, x, y)
     @b = b.to_i
     @x, @y = [x, y].map { |a| a.to_i(@b) }
-    @count = 0
     @keta = y.size
   end
 
   def calc
+    @count = 0
     (1...@b).each { |n| countup(n.to_s(@b)) }
     @count
   end
