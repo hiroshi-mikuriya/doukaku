@@ -17,15 +17,25 @@ func guruguru(b int, src string) bool {
 	return true
 }
 
-func calc(b int, x, y string) int {
-	xx, _ := strconv.ParseInt(x, b, 32)
-	yy, _ := strconv.ParseInt(y, b, 32)
-	count := 0
-	for i := xx; i <= yy; i++ {
-		src := strconv.FormatInt(i, b)
-		if guruguru(b, src) {
-			count += 1
+func countup(b, x, y, n int, count *int) {
+	if x <= n && n <= y {
+		*count += 1
+	}
+	if y <= n {
+		return
+	}
+	n0 := n % b
+	for n1 := 0; n1 < b; n1++ {
+		if n0 == n1 || (n0 + 1) % b == n1 {
+			countup(b, x, y, n * b + n1, count)
 		}
+	}
+}
+
+func calc(b, x, y int) int {
+	count := 0
+	for n := 1; n < b; n++ {
+		countup(b, x, y, n, &count)
 	}
 	return count
 }
@@ -37,7 +47,9 @@ func test(d string) {
 	exp, _ := strconv.Atoi(tmp0[2])
 	tmp1 := strings.Split(src, ",")
 	b, _ := strconv.Atoi(tmp1[0])
-	act := calc(b, tmp1[1], tmp1[2])
+	x, _ := strconv.ParseInt(tmp1[1], b, 32)
+	y, _ := strconv.ParseInt(tmp1[2], b, 32)
+	act := calc(b, int(x), int(y))
 	if act == exp {
 		fmt.Printf("%s OK\n", n)
 	}else{
