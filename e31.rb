@@ -14,12 +14,11 @@ class Guruguru
 
   def countup(src)
     @count += 1 if @x <= src && src <= @y # (@x..@y).cover?(src) よりも速い
-    return if @y <= src
+    return if @y / @b < src
 
-    n0 = src % @b
-    @b.times do |n|
-      countup(src * @b + n) if n0 == n || (n0 + 1) % @b == n
-    end
+    n = src % @b
+    countup(src * @b + n)
+    countup(src * @b + (n + 1) % @b)
   end
 end
 
