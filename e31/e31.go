@@ -6,17 +6,6 @@ import (
 	"strconv"
 )
 
-func guruguru(b int, src string) bool {
-	for i := 1; i < len(src); i++ {
-		a0, _ := strconv.ParseInt(string(src[i - 1]), b, 32)
-		a1, _ := strconv.ParseInt(string(src[i]), b, 32)
-		if a0 != a1 && ((a0 + 1) % int64(b)) != a1 {
-			return false
-		}
-	}
-	return true
-}
-
 func countup(b, x, y, n int, count *int) {
 	if x <= n && n <= y {
 		*count += 1
