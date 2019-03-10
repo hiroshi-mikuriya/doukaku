@@ -17,8 +17,8 @@ class Guruguru
     @count += 1 if @keta[:min] <= src.size && (@x..@y).cover?(src.to_i(@b))
     return if @keta[:max] <= src.size
 
-    (0...@b).each do |n|
-      n0 = src[-1].to_i(@b)
+    n0 = src[-1].to_i(@b)
+    @b.times do |n|
       countup(src + n.to_s(@b)) if n0 == n || (n0 + 1) % @b == n
     end
   end
