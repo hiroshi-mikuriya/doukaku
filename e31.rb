@@ -13,7 +13,7 @@ class Guruguru
   private
 
   def countup(src)
-    @count += 1 if (@x..@y).cover? src
+    @count += 1 if @x <= src && src <= @y # (@x..@y).cover?(src) よりも速い
     return if @y <= src
 
     n0 = src % @b
@@ -23,6 +23,7 @@ class Guruguru
   end
 end
 
+t = Time.now
 DATA.each do |d|
   n, src, exp = d.split
   act = Guruguru.new(*src.split(',')).calc
@@ -32,6 +33,7 @@ DATA.each do |d|
     puts "#{n} ng #{src} #{act} != #{exp}"
   end
 end
+p Time.now - t
 
 __END__
 0	4,1313,3012	12
