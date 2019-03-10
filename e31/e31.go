@@ -10,12 +10,11 @@ func countup(b, x, y, n int, count *int) {
 	if x <= n && n <= y {
 		*count += 1
 	}
-	if y <= n {
-		return
+	if n <= y / b {
+		n0 := n % b
+		countup(b, x, y, n * b + n0, count)
+		countup(b, x, y, n * b + (n0 + 1) % b, count)
 	}
-	n0 := n % b
-	countup(b, x, y, n * b + n0, count)
-	countup(b, x, y, n * b + (n0 + 1) % b, count)
 }
 
 func calc(b, x, y int) int {
