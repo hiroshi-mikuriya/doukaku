@@ -14,11 +14,8 @@ func countup(b, x, y, n int, count *int) {
 		return
 	}
 	n0 := n % b
-	for n1 := 0; n1 < b; n1++ {
-		if n0 == n1 || (n0 + 1) % b == n1 {
-			countup(b, x, y, n * b + n1, count)
-		}
-	}
+	countup(b, x, y, n * b + n0, count)
+	countup(b, x, y, n * b + (n0 + 1) % b, count)
 }
 
 func calc(b, x, y int) int {
