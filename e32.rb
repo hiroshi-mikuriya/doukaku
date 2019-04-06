@@ -9,31 +9,31 @@ end
 
 def calc(src)
   # puts src
-  ss = src.split('/').map do |a|
+  src_sq = src.split('/').map do |a|
     s = a.scan(/./).map { |b| b.to_i(36) }
     x = (s[0]...s[2])
     y = (s[1]...s[3])
     SYM.zip([x, y]).to_h
   end
-  # puts ['ss', ss]
-  sq = ss.each_with_object([]) do |s0, o|
+  # puts ['src_sq', src_sq]
+  all_sq = src_sq.each_with_object([]) do |s0, o|
     o.push(s0)
-    ss.each do |s1|
+    src_sq.each do |s1|
       d = dup(s0, s1)
       o.push(d) if d
       # TODO: 6のケースを拾えていない
     end
   end.uniq
-  # puts ['sq', sq]
-  dst = sq.select do |s0|
-    sq1 = sq.clone
+  # puts ['all_sq', all_sq]
+  correct_sq = all_sq.select do |s0|
+    sq1 = all_sq.clone
     sq1.delete(s0)
     sq1.all? do |s1|
       a = dup(s0, s1)
       a.nil? || a == s0
     end
   end
-  area = dst.map { |a| a[:x].size * a[:y].size }
+  area = correct_sq.map { |a| a[:x].size * a[:y].size }
   area.sort.map(&:to_s).join(',')
 end
 
