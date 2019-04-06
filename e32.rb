@@ -1,10 +1,10 @@
 SYM = %i[x y].freeze
 
 def dup(s0, s1)
-  x, y = SYM.map { |s| s0[s].to_a & s1[s].to_a }
-  return nil if x.empty? || y.empty?
+  res = SYM.map { |s| s0[s].to_a & s1[s].to_a }
+  return nil if res.any?(&:empty?)
 
-  { x: (x.min...(x.max + 1)), y: (y.min...(y.max + 1)) }
+  SYM.zip(res.map { |xy| (xy.min...(xy.max + 1)) }).to_h
 end
 
 def calc(src)
