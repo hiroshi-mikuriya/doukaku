@@ -10,7 +10,7 @@ end
 def calc(src)
   # puts src
   src_sq = src.split('/').map do |a|
-    s = a.scan(/./).map { |b| b.to_i(36) }
+    s = a.chars.map { |b| b.to_i(36) }
     x = (s[0]...s[2])
     y = (s[1]...s[3])
     SYM.zip([x, y]).to_h
@@ -49,7 +49,7 @@ DATA.each do |d|
   if act == exp
     puts "#{n} OK"
   else
-    # puts "#{n} ng #{src} #{act} != #{exp}"
+    puts "#{n} ng #{src} #{act} != #{exp}"
   end
 end
 p Time.now - t
