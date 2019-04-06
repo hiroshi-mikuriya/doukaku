@@ -15,15 +15,16 @@ def calc(src)
     y = (s[1]...s[3])
     SYM.zip([x, y]).to_h
   end
-  # puts ss
+  # puts ['ss', ss]
   sq = ss.each_with_object([]) do |s0, o|
     o.push(s0)
     ss.each do |s1|
       d = dup(s0, s1)
       o.push(d) if d
+      # TODO: 6のケースを拾えていない
     end
   end.uniq
-  # puts sq
+  # puts ['sq', sq]
   dst = sq.select do |s0|
     sq1 = sq.clone
     sq1.delete(s0)
@@ -40,16 +41,17 @@ end
 # p dup({x:(0...2), y:(0...2)}, {x:(1...5), y:(1...5)})
 # p dup({x:(0...2), y:(0...2)}, {x:(1...5), y:(2...5)})
 # p dup({x:(0...2), y:(0...2)}, {x:(2...5), y:(2...5)})
+p dup({:x=>2...31, :y=>19...30}, {:x=>22...31, :y=>19...30})
 
 t = Time.now
 DATA.each do |d|
   n, src, exp = d.split
-  next if n.to_i > 10
+  # next if n.to_i != 6
   act = calc(src)
   if act == exp
     puts "#{n} OK"
   else
-    puts "#{n} ng #{src} #{act} != #{exp}"
+    # puts "#{n} ng #{src} #{act} != #{exp}"
   end
 end
 p Time.now - t
