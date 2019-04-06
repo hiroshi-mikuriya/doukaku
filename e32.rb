@@ -14,7 +14,7 @@ def calc(src)
     x = (s[0]...s[2])
     y = (s[1]...s[3])
     SYM.zip([x, y]).to_h
-  end
+  end.freeze
   # puts ['src_sq', src_sq]
   all_sq = src_sq.each_with_object([]) do |s0, o|
     o.push(s0)
@@ -23,16 +23,16 @@ def calc(src)
       o.push(d) if d
       # TODO: 6のケースを拾えていない
     end
-  end.uniq
+  end.uniq.freeze
   # puts ['all_sq', all_sq]
   correct_sq = all_sq.select do |s0|
-    sq1 = all_sq.clone
+    sq1 = all_sq.clone(freeze: false)
     sq1.delete(s0)
     sq1.all? do |s1|
       a = dup(s0, s1)
       a.nil? || a == s0
     end
-  end
+  end.freeze
   area = correct_sq.map { |a| a[:x].size * a[:y].size }
   area.sort.map(&:to_s).join(',')
 end
