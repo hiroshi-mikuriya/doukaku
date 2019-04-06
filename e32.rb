@@ -26,9 +26,7 @@ def calc(src)
   end.uniq.freeze
   # puts ['all_sq', all_sq]
   correct_sq = all_sq.select do |s0|
-    sq1 = all_sq.clone(freeze: false)
-    sq1.delete(s0)
-    sq1.all? do |s1|
+    all_sq.all? do |s1|
       a = dup(s0, s1)
       a.nil? || a == s0
     end
@@ -41,7 +39,7 @@ end
 # p dup({x:(0...2), y:(0...2)}, {x:(1...5), y:(1...5)})
 # p dup({x:(0...2), y:(0...2)}, {x:(1...5), y:(2...5)})
 # p dup({x:(0...2), y:(0...2)}, {x:(2...5), y:(2...5)})
-p dup({:x=>2...31, :y=>19...30}, {:x=>22...31, :y=>19...30})
+# p dup({:x=>2...31, :y=>19...30}, {:x=>22...31, :y=>19...30})
 
 t = Time.now
 DATA.each do |d|
