@@ -21,15 +21,15 @@ std::vector<cv::Rect> parse(std::string const & src)
 
 cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
 {
-    cv::Mat canvas = cv::Mat::zeros(36, 36, CV_8UC3);
+    cv::Mat canvas = cv::Mat::zeros(38, 38, CV_8UC3);
     for (size_t i = 0; i < rects.size(); ++i) {
         const uint16_t v = 1 << (i + 1);
         const uint8_t a0 = v / 256;
         const uint8_t a1 = v % 256;
         const int right = rects[i].x + rects[i].width;
         const int bottom = rects[i].y + rects[i].height;
-        for (int x = rects[i].x; x < right; ++x) {
-            for (int y = rects[i].y; y < bottom; ++y) {
+        for (int x = rects[i].x + 1; x <= right; ++x) {
+            for (int y = rects[i].y + 1; y <= bottom; ++y) {
                 auto & v = canvas.at<cv::Vec3b>(y, x);
                 v[0] |= a0;
                 v[1] |= a1;
