@@ -56,7 +56,7 @@ std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
             mask = mask(cv::Rect(1, 1, N, N));
             if (rc.area() == cv::countNonZero(mask))
                 dst.push_back(rc);
-            checked = cv::max(checked, mask);
+            checked += mask;
         }
     }
     return dst;
