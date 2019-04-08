@@ -1,6 +1,15 @@
 *
-!*/
-!*.*
+*.*
 
-*.o
-*.exe
+!*/
+!.gitignore
+!.md
+!.go
+!.cpp
+!.c
+!.h
+!.hpp
+!.rb
+!Makefile
+!Gemfile
+!Gemfile.lock
