@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 #include <opencv2/opencv.hpp>
 
 struct Rect
@@ -43,25 +44,42 @@ cv::Mat make_canvas(std::vector<Rect> const & rects)
     return canvas;
 }
 
-std::vector<Rects> search_rect(cv::Mat const & canvas)
+std::vector<Rect> search_rect(cv::Mat const & canvas)
 {
     cv::Mat checked = cv::Mat::zeros(36, 36, CV_8UC1);
-    std::vector<Rects> dst;
+    std::vector<Rect> dst;
     for (int x = 0; x < canvas.cols; ++x) {
         for (int y = 0; y < canvas.rows; ++y) {
             if (checked.at<uint8_t>(y, x)) {
                 continue;
             }
-            
+            // int floodFill(Mat& image, Point seed, Scalar newVal, Rect* rect=0, Scalar loDiff=Scalar(), Scalar upDiff=Scalar(), int flags=4)
+            // int floodFill(Mat& image, Mat& mask, Point seed, Scalar newVal, Rect* rect=0, Scalar loDiff=Scalar(), Scalar upDiff=Scalar(), int flags=4)
         }
     }
     return dst;
 }
 
+std::vector<int> sort_area(std::vector<Rect> const & rects)
+{
+    std::vector<int> areas;
+    for (auto rc : rects) {
+        areas.push_back(rc.area());
+    }
+    std::sort(areas.begin(), areas.end());
+    return areas;
+}
+
 std::string calc(std::string const & src)
 {
-    auto const rects = search_rect(make_canvas(parse(src)));
-    return "";
+    // auto const areas = sort_area(search_rect(make_canvas(parse(src))));
+    auto const areas = sort_area(parse(src));
+    std::stringstream ss;
+    for (size_t i = 0; i < areas.size(); ++i) {
+        ss << std::to_string(areas[i]) << ",";
+    }
+    auto str = ss.str();
+    return std::string(str.begin(), str.end() - 1);
 }
 
 void test(std::string const & src, std::string const & exp)
