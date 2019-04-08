@@ -3,11 +3,13 @@
 #include <opencv2/opencv.hpp>
 #include <ctime>
 
+const int N = 36;
+
 std::vector<cv::Rect> parse(std::string const & src)
 {
     auto atoi = [](char c) -> int {
         char a[] = { c, 0 };
-        return std::stoi(a, nullptr, 36);
+        return std::stoi(a, nullptr, N);
     };
     std::vector<cv::Rect> rects((src.size() + 1) / 5);
     for (size_t i = 0; i < rects.size(); ++i) {
@@ -22,7 +24,7 @@ std::vector<cv::Rect> parse(std::string const & src)
 
 cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
 {
-    cv::Mat canvas = cv::Mat::zeros(38, 38, CV_8UC3);
+    cv::Mat canvas = cv::Mat::zeros(N + 2, N + 2, CV_8UC3);
     for (size_t i = 0; i < rects.size(); ++i) {
         const uint16_t v = 1 << (i + 1);
         const uint8_t a0 = v / 256;
@@ -42,21 +44,18 @@ cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
 
 std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
 {
-    cv::Mat checked = cv::Mat::zeros(36, 36, CV_8UC1);
+    cv::Mat checked = cv::Mat::zeros(N, N, CV_8UC1);
     std::vector<cv::Rect> dst;
     for (int x = 0; x < canvas.cols; ++x) {
         for (int y = 0; y < canvas.rows; ++y) {
-            if (checked.at<uint8_t>(y, x)) {
+            if (checked.at<uint8_t>(y, x))
                 continue;
-            }
-            cv::Mat copy = canvas.clone();
-            cv::Mat mask = cv::Mat::zeros(copy.rows + 2, copy.cols + 2, CV_8UC1);
+            cv::Mat mask = cv::Mat::zeros(canvas.rows + 2, canvas.cols + 2, CV_8UC1);
             cv::Rect rc;
-            floodFill(copy, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
-            mask = mask(cv::Rect(1, 1, 36, 36));
-            if (rc.area() == cv::countNonZero(mask)) {
+            floodFill(canvas, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
+            mask = mask(cv::Rect(1, 1, N, N));
+            if (rc.area() == cv::countNonZero(mask))
                 dst.push_back(rc);
-            }
             checked = cv::max(checked, mask);
         }
     }
@@ -66,9 +65,8 @@ std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
 std::vector<int> sort_area(std::vector<cv::Rect> const & rects)
 {
     std::vector<int> areas;
-    for (auto rc : rects) {
+    for (auto rc : rects)
         areas.push_back(rc.area());
-    }
     std::sort(areas.begin(), areas.end());
     return areas;
 }
@@ -79,9 +77,8 @@ std::string join(std::string const & sep, container const & c)
     std::stringstream ss;
     for (size_t i = 0; i < c.size(); ++i) {
         ss << c[i];
-        if (i < c.size() - 1) {
+        if (i < c.size() - 1)
             ss << sep;
-        }
     }
     return ss.str();
 }
