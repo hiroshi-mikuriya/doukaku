@@ -72,17 +72,22 @@ std::vector<int> sort_area(std::vector<cv::Rect> const & rects)
     return areas;
 }
 
-std::string calc(std::string const & src)
+template<typename container>
+std::string join(std::string const & sep, container const & c)
 {
-    auto const areas = sort_area(search_rect(make_canvas(parse(src))));
     std::stringstream ss;
-    for (size_t i = 0; i < areas.size(); ++i) {
-        ss << std::to_string(areas[i]);
-        if (i < areas.size() - 1) {
-            ss << ",";
+    for (size_t i = 0; i < c.size(); ++i) {
+        ss << c[i];
+        if (i < c.size() - 1) {
+            ss << sep;
         }
     }
     return ss.str();
+}
+
+std::string calc(std::string const & src)
+{
+    return join(",", sort_area(search_rect(make_canvas(parse(src)))));
 }
 
 void test(std::string const & src, std::string const & exp)
