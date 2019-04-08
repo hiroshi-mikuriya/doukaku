@@ -22,7 +22,7 @@ std::vector<cv::Rect> parse(std::string const & src)
     return rects;
 }
 
-cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
+cv::Mat make_pic(std::vector<cv::Rect> const & rects)
 {
     cv::Mat canvas = cv::Mat::zeros(N + 2, N + 2, CV_8UC3);
     for (size_t i = 0; i < rects.size(); ++i) {
@@ -42,17 +42,17 @@ cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
     return canvas;
 }
 
-std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
+std::vector<cv::Rect> search_rect(cv::Mat const & pic)
 {
     cv::Mat checked = cv::Mat::zeros(N, N, CV_8UC1);
     std::vector<cv::Rect> dst;
-    for (int x = 0; x < canvas.cols; ++x) {
-        for (int y = 0; y < canvas.rows; ++y) {
+    for (int x = 0; x < pic.cols; ++x) {
+        for (int y = 0; y < pic.rows; ++y) {
             if (checked.at<uint8_t>(y, x))
                 continue;
-            cv::Mat mask = cv::Mat::zeros(canvas.rows + 2, canvas.cols + 2, CV_8UC1);
+            cv::Mat mask = cv::Mat::zeros(pic.rows + 2, pic.cols + 2, CV_8UC1);
             cv::Rect rc;
-            floodFill(canvas, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
+            floodFill(pic, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
             mask = mask(cv::Rect(1, 1, N, N));
             if (rc.area() == cv::countNonZero(mask))
                 dst.push_back(rc);
@@ -85,7 +85,7 @@ std::string join(std::string const & sep, container const & c)
 
 std::string calc(std::string const & src)
 {
-    return join(",", sort_area(search_rect(make_canvas(parse(src)))));
+    return join(",", sort_area(search_rect(make_pic(parse(src)))));
 }
 
 void test(std::string const & src, std::string const & exp)
