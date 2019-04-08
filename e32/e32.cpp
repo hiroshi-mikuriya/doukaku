@@ -2,65 +2,67 @@
 #include <sstream>
 #include <opencv2/opencv.hpp>
 
-struct Rect
-{
-    int l, t, r, b;
-    int area()const { return (r - l) * (b - t); }
-};
-
-std::ostream & operator<<(std::ostream & o, Rect const & rc)
-{
-    return o << "left : " << rc.l << " top : " << rc.t << " right : " << rc.r << " bottom : " << rc.b;
-}
-
-std::vector<Rect> parse(std::string const & src)
+std::vector<cv::Rect> parse(std::string const & src)
 {
     auto atoi = [](char c) -> int {
         char a[] = { c, 0 };
         return std::stoi(a, nullptr, 36);
     };
-    std::vector<Rect> rects((src.size() + 1) / 5);
+    std::vector<cv::Rect> rects((src.size() + 1) / 5);
     for (size_t i = 0; i < rects.size(); ++i) {
         int pos = i * 5;
-        rects[i].l = atoi(src[pos]);
-        rects[i].t = atoi(src[pos + 1]);
-        rects[i].r = atoi(src[pos + 2]);
-        rects[i].b = atoi(src[pos + 3]);
+        rects[i].x = atoi(src[pos]);
+        rects[i].y = atoi(src[pos + 1]);
+        rects[i].width = atoi(src[pos + 2]) - rects[i].x;
+        rects[i].height = atoi(src[pos + 3]) - rects[i].y;
     }
     return rects;
 }
 
-cv::Mat make_canvas(std::vector<Rect> const & rects)
+cv::Mat make_canvas(std::vector<cv::Rect> const & rects)
 {
-    cv::Mat canvas = cv::Mat::zeros(36, 36, CV_16UC1);
+    cv::Mat canvas = cv::Mat::zeros(36, 36, CV_8UC3);
     for (size_t i = 0; i < rects.size(); ++i) {
-        uint16_t v = 1 << (i + 1);
-        for (int x = rects[i].l; x < rects[i].r; ++x) {
-            for (int y = rects[i].t; y < rects[i].b; ++y) {
-                canvas.at<uint16_t>(y, x) |= v;
+        const uint16_t v = 1 << (i + 1);
+        const uint8_t a0 = v / 256;
+        const uint8_t a1 = v % 256;
+        const int right = rects[i].x + rects[i].width;
+        const int bottom = rects[i].y + rects[i].height;
+        for (int x = rects[i].x; x < right; ++x) {
+            for (int y = rects[i].y; y < bottom; ++y) {
+                auto & v = canvas.at<cv::Vec3b>(y, x);
+                v[0] |= a0;
+                v[1] |= a1;
             }
         }
     }
     return canvas;
 }
 
-std::vector<Rect> search_rect(cv::Mat const & canvas)
+std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
 {
     cv::Mat checked = cv::Mat::zeros(36, 36, CV_8UC1);
-    std::vector<Rect> dst;
+    std::vector<cv::Rect> dst;
     for (int x = 0; x < canvas.cols; ++x) {
         for (int y = 0; y < canvas.rows; ++y) {
             if (checked.at<uint8_t>(y, x)) {
                 continue;
             }
-            // int floodFill(Mat& image, Point seed, Scalar newVal, Rect* rect=0, Scalar loDiff=Scalar(), Scalar upDiff=Scalar(), int flags=4)
-            // int floodFill(Mat& image, Mat& mask, Point seed, Scalar newVal, Rect* rect=0, Scalar loDiff=Scalar(), Scalar upDiff=Scalar(), int flags=4)
+            cv::Mat copy = canvas.clone();
+            cv::Mat mask = cv::Mat::zeros(copy.rows + 2, copy.cols + 2, CV_8UC1);
+            cv::Rect rc;
+            floodFill(copy, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
+            cv::Mat trim = mask(cv::Rect(1, 1, canvas.cols, canvas.rows));
+            if (rc.area() == cv::countNonZero(trim)) {
+                dst.push_back(rc);
+                checked(rc) = 1;
+            }
         }
     }
     return dst;
 }
 
-std::vector<int> sort_area(std::vector<Rect> const & rects)
+std::vector<int> sort_area(std::vector<cv::Rect> const & rects)
 {
     std::vector<int> areas;
     for (auto rc : rects) {
@@ -72,14 +74,15 @@ std::vector<int> sort_area(std::vector<Rect> const & rects)
 
 std::string calc(std::string const & src)
 {
-    // auto const areas = sort_area(search_rect(make_canvas(parse(src))));
-    auto const areas = sort_area(parse(src));
+    auto const areas = sort_area(search_rect(make_canvas(parse(src))));
     std::stringstream ss;
     for (size_t i = 0; i < areas.size(); ++i) {
-        ss << std::to_string(areas[i]) << ",";
+        ss << std::to_string(areas[i]);
+        if (i < areas.size() - 1) {
+            ss << ",";
+        }
     }
-    auto str = ss.str();
-    return std::string(str.begin(), str.end() - 1);
+    return ss.str();
 }
 
 void test(std::string const & src, std::string const & exp)
