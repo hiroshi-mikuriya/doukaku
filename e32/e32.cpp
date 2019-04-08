@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <opencv2/opencv.hpp>
+#include <ctime>
 
 std::vector<cv::Rect> parse(std::string const & src)
 {
@@ -52,11 +53,11 @@ std::vector<cv::Rect> search_rect(cv::Mat const & canvas)
             cv::Mat mask = cv::Mat::zeros(copy.rows + 2, copy.cols + 2, CV_8UC1);
             cv::Rect rc;
             floodFill(copy, mask, cv::Point(x, y), cv::Scalar::all(0xFF), &rc);
-            cv::Mat trim = mask(cv::Rect(1, 1, canvas.cols, canvas.rows));
-            if (rc.area() == cv::countNonZero(trim)) {
+            mask = mask(cv::Rect(1, 1, 36, 36));
+            if (rc.area() == cv::countNonZero(mask)) {
                 dst.push_back(rc);
-                checked(rc) = 1;
             }
+            checked = cv::max(checked, mask);
         }
     }
     return dst;
@@ -94,7 +95,7 @@ void test(std::string const & src, std::string const & exp)
 {
     auto const act = calc(src);
     if (act == exp) {
-        std::cerr << "OK" << std::endl;
+        // std::cerr << "OK" << std::endl;
     } else {
         std::cerr << "NG " << src << " : " << act << " != " << exp << std::endl;
     }
@@ -102,6 +103,7 @@ void test(std::string const & src, std::string const & exp)
 
 int main()
 {
+    auto start = clock();
     /*0*/ test( "43gw/d7qq/mlop", "8,57" );
     /*1*/ test( "034a", "28" );
     /*2*/ test( "06qr/8pnq", "15" );
@@ -156,4 +158,5 @@ int main()
     /*51*/ test( "4eht/38jt/jeym/htjv/eeyv/eejt/3myv/h1jt/hejm", "4,6,7,12,14,14,16,21,22,24,70,80,120,135" );
     /*52*/ test( "smuz/04c7/28zc/83ri/cihu/8flm/masw/8ivo", "2,4,6,8,10,10,12,16,16,20,22,24,24,30,30,36,39,48" );
     /*53*/ test( "7fuu/17fd/6cpg/fghu/ahnt/adww/rhxz/4hxl/0pby", "1,2,2,2,3,3,4,4,4,5,8,8,9,10,12,12,12,12,15,15,16,16,20,24,27,30,32,48" );
+    std::cout << static_cast<double>(clock() - start) / CLOCKS_PER_SEC << "sec" << std::endl;
 }
